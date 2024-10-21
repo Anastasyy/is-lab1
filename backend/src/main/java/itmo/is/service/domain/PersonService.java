@@ -49,6 +49,18 @@ public class PersonService {
         personRepository.deleteById(id);
     }
 
+    public void allowAdminEditing(int id) {
+        var person = personRepository.findById(id).orElseThrow();
+        person.setAdminEditAllowed(true);
+        personRepository.save(person);
+    }
+
+    public void denyAdminEditing(int id) {
+        var person = personRepository.findById(id).orElseThrow();
+        person.setAdminEditAllowed(false);
+        personRepository.save(person);
+    }
+
     public CountResponse countPeopleByExactWeight(Integer weight) {
         return new CountResponse(personRepository.countByWeightEquals(weight));
     }

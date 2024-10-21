@@ -64,6 +64,20 @@ public class PersonRestController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("@personSecurityService.isOwner(#id)")
+    @PutMapping("/{id}/allow-admin-editing")
+    public ResponseEntity<Void> allowAdminEditing(@PathVariable int id) {
+        personService.allowAdminEditing(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("@personSecurityService.isOwner(#id)")
+    @PutMapping("/{id}/deny-admin-editing")
+    public ResponseEntity<Void> denyAdminEditing(@PathVariable int id) {
+        personService.denyAdminEditing(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/count-by-weight")
     public ResponseEntity<CountResponse> countPeopleByWeight(@RequestParam Integer weight) {
         CountResponse response = personService.countPeopleByExactWeight(weight);

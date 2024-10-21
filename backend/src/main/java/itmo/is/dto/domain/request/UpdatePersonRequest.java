@@ -9,9 +9,6 @@ import itmo.is.model.domain.Country;
 import java.time.LocalDate;
 
 public record UpdatePersonRequest(
-        @JsonProperty(value = "id", required = true)
-        int id,
-
         @JsonProperty(value = "name", required = true)
         String name,
 

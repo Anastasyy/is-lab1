@@ -39,8 +39,10 @@ public class PersonService {
         return personMapper.toDto(personRepository.save(personMapper.toEntity(request)));
     }
 
-    public PersonDto updatePerson(UpdatePersonRequest request) {
-        return personMapper.toDto(personRepository.save(personMapper.toEntity(request)));
+    public PersonDto updatePerson(int id, UpdatePersonRequest request) {
+        var person = personMapper.toEntity(request);
+        person.setId(id);
+        return personMapper.toDto(personRepository.save(person));
     }
 
     public void deletePerson(int id) {

@@ -46,9 +46,12 @@ public class PersonRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPerson);
     }
 
-    @PutMapping()
-    public ResponseEntity<PersonDto> updatePerson(@RequestBody UpdatePersonRequest request) {
-        PersonDto updatedPerson = personService.updatePerson(request);
+    @PutMapping("/{id}")
+    public ResponseEntity<PersonDto> updatePerson(
+            @PathVariable int id,
+            @RequestBody UpdatePersonRequest request
+    ) {
+        PersonDto updatedPerson = personService.updatePerson(id, request);
         return ResponseEntity.ok(updatedPerson);
     }
 

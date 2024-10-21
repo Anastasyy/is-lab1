@@ -1,5 +1,6 @@
 package itmo.is.model.domain;
 
+import itmo.is.model.security.OwnedEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Person {
+public class Person extends OwnedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -30,7 +31,6 @@ public class Person {
     @Embedded
     private Coordinates coordinates;
 
-    @NotNull
     @CreationTimestamp
     @Column(name = "creation_date", updatable = false, nullable = false)
     private LocalDateTime creationDate;

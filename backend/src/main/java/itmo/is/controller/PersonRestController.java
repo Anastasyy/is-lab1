@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,6 +47,7 @@ public class PersonRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPerson);
     }
 
+    @PreAuthorize("@personSecurityService.hasEditRights(#id)")
     @PutMapping("/{id}")
     public ResponseEntity<PersonDto> updatePerson(
             @PathVariable int id,
@@ -55,6 +57,7 @@ public class PersonRestController {
         return ResponseEntity.ok(updatedPerson);
     }
 
+    @PreAuthorize("@personSecurityService.isOwner(#id)")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePerson(@PathVariable int id) {
         personService.deletePerson(id);

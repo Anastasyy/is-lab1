@@ -34,6 +34,9 @@ public record CreatePersonRequest(
         Integer weight,
 
         @JsonProperty(value = "nationality", required = false)
-        Country nationality
+        Country nationality,
+
+        @JsonProperty(value = "admin_edit_allowed", required = true)
+        boolean adminEditAllowed
 ) {
 }

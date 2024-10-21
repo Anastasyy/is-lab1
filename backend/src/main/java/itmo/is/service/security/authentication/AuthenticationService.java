@@ -9,6 +9,7 @@ import itmo.is.model.security.Role;
 import itmo.is.model.security.User;
 import itmo.is.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +26,9 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+
+    @Value("${application.security.password-min-length}")
+    private int passwordMinLength;
 
     public JwtResponse authenticate(LoginRequest request) {
         authenticationManager.authenticate(
@@ -90,12 +94,23 @@ public class AuthenticationService {
     }
 
     private User createUser(RegisterRequest request, Role role, boolean enabled) {
-        checkIfUsernameIsTaken(request.username());
+        validateRegisterRequest(request);
         User user = userMapper.toEntity(request);
         encodePassword(user);
         user.setRole(role);
         user.setEnabled(enabled);
         return userRepository.save(user);
+    }
+
+    private void validateRegisterRequest(RegisterRequest request) {
+        checkIfUsernameIsTaken(request.username());
+        validatePasswordLength(request.password());
+    }
+
+    private void validatePasswordLength(String password) {
+        if (password.length() < passwordMinLength) {
+            throw new AuthenticationServiceException("Password must be at least " + passwordMinLength + " characters");
+        }
     }
 
     private void encodePassword(User user) {

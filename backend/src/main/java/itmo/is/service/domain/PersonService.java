@@ -1,15 +1,13 @@
 package itmo.is.service.domain;
 
-import itmo.is.dto.domain.ColorDto;
-import itmo.is.dto.domain.CountryDto;
 import itmo.is.dto.domain.PersonDto;
 import itmo.is.dto.domain.request.CreatePersonRequest;
 import itmo.is.dto.domain.request.UpdatePersonRequest;
 import itmo.is.dto.domain.response.CountResponse;
 import itmo.is.dto.domain.response.PercentageResponse;
-import itmo.is.mapper.domain.ColorMapper;
-import itmo.is.mapper.domain.CountryMapper;
 import itmo.is.mapper.domain.PersonMapper;
+import itmo.is.model.domain.Color;
+import itmo.is.model.domain.Country;
 import itmo.is.repository.PersonRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +23,6 @@ import java.util.List;
 public class PersonService {
     private final PersonRepository personRepository;
     private final PersonMapper personMapper;
-    private final CountryMapper countryMapper;
-    private final ColorMapper colorMapper;
 
     public Page<PersonDto> findAllPeople(String name, Pageable pageable) {
         if (name != null && !name.isEmpty()) {
@@ -59,22 +55,22 @@ public class PersonService {
         return new CountResponse(personRepository.countByWeightLessThan(weight));
     }
 
-    public List<CountryDto> findDistinctNationalities() {
-        return personRepository.findDistinctNationalities().stream().map(countryMapper::toDto).toList();
+    public List<Country> findDistinctNationalities() {
+        return personRepository.findDistinctNationalities();
     }
 
-    public CountResponse countPeopleByHairColor(ColorDto color) {
-        return new CountResponse(personRepository.countByHairColorEquals(colorMapper.toEntity(color)));
+    public CountResponse countPeopleByHairColor(Color color) {
+        return new CountResponse(personRepository.countByHairColorEquals(color));
     }
 
-    public PercentageResponse calculatePercentageOfPeopleByEyeColor(ColorDto color) {
+    public PercentageResponse calculatePercentageOfPeopleByEyeColor(Color color) {
         long total = personRepository.count();
 
         if (total == 0) {
             return new PercentageResponse(0);
         }
 
-        long countByEyeColor = personRepository.countByEyeColorEquals(colorMapper.toEntity(color));
+        long countByEyeColor = personRepository.countByEyeColorEquals(color);
         double percentage = (double) countByEyeColor / (double) total * 100;
 
         return new PercentageResponse(percentage);

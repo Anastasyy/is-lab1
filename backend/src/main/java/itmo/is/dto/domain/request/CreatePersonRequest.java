@@ -1,10 +1,10 @@
 package itmo.is.dto.domain.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import itmo.is.dto.domain.ColorDto;
 import itmo.is.dto.domain.CoordinatesDto;
-import itmo.is.dto.domain.CountryDto;
 import itmo.is.dto.domain.LocationDto;
+import itmo.is.model.domain.Color;
+import itmo.is.model.domain.Country;
 
 import java.time.LocalDate;
 
@@ -16,10 +16,10 @@ public record CreatePersonRequest(
         CoordinatesDto coordinates,
 
         @JsonProperty(value = "eye_color", required = false)
-        ColorDto eyeColor,
+        Color eyeColor,
 
         @JsonProperty(value = "hair_color", required = true)
-        ColorDto hairColor,
+        Color hairColor,
 
         @JsonProperty(value = "location", required = true)
         LocationDto location,
@@ -34,6 +34,6 @@ public record CreatePersonRequest(
         Integer weight,
 
         @JsonProperty(value = "nationality", required = false)
-        CountryDto nationality
+        Country nationality
 ) {
 }

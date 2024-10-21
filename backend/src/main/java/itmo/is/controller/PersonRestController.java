@@ -1,12 +1,12 @@
 package itmo.is.controller;
 
-import itmo.is.dto.domain.ColorDto;
-import itmo.is.dto.domain.CountryDto;
 import itmo.is.dto.domain.PersonDto;
 import itmo.is.dto.domain.request.CreatePersonRequest;
 import itmo.is.dto.domain.request.UpdatePersonRequest;
 import itmo.is.dto.domain.response.CountResponse;
 import itmo.is.dto.domain.response.PercentageResponse;
+import itmo.is.model.domain.Color;
+import itmo.is.model.domain.Country;
 import itmo.is.service.domain.PersonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -71,19 +71,19 @@ public class PersonRestController {
     }
 
     @GetMapping("/nationalities")
-    public ResponseEntity<List<CountryDto>> getDistinctNationalities() {
-        List<CountryDto> nationalities = personService.findDistinctNationalities();
+    public ResponseEntity<List<Country>> getDistinctNationalities() {
+        List<Country> nationalities = personService.findDistinctNationalities();
         return ResponseEntity.ok(nationalities);
     }
 
     @GetMapping("/count-by-hair-color")
-    public ResponseEntity<CountResponse> countPeopleByHairColor(@RequestParam ColorDto color) {
+    public ResponseEntity<CountResponse> countPeopleByHairColor(@RequestParam Color color) {
         CountResponse response = personService.countPeopleByHairColor(color);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/percentage-by-eye-color")
-    public ResponseEntity<PercentageResponse> calculatePercentageByEyeColor(@RequestParam ColorDto color) {
+    public ResponseEntity<PercentageResponse> calculatePercentageByEyeColor(@RequestParam Color color) {
         PercentageResponse response = personService.calculatePercentageOfPeopleByEyeColor(color);
         return ResponseEntity.ok(response);
     }

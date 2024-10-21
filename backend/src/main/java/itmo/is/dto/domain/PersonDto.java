@@ -1,6 +1,9 @@
 package itmo.is.dto.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import itmo.is.model.domain.Color;
+import itmo.is.model.domain.Country;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -18,10 +21,10 @@ public record PersonDto(
         LocalDateTime creationDate,
 
         @JsonProperty("eye_color")
-        ColorDto eyeColor,
+        Color eyeColor,
 
         @JsonProperty("hair_color")
-        ColorDto hairColor,
+        Color hairColor,
 
         @JsonProperty("location")
         LocationDto location,
@@ -36,6 +39,6 @@ public record PersonDto(
         Integer weight,
 
         @JsonProperty("nationality")
-        CountryDto nationality
+        Country nationality
 ) {
 }

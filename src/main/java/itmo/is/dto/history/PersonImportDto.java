@@ -22,11 +22,11 @@ public record PersonImportDto(
         @JsonProperty(value = "objects_added", required = true)
         Integer objectsAdded,
 
-        @Schema(example = "2024-11-30T20:24:23.760031")
+        @Schema(example = "2024-02-10T16:24:23.760031")
         @JsonProperty(value = "started_at", required = true)
         LocalDateTime startedAt,
 
-        @Schema(example = "2024-11-30T20:24:24.233199")
+        @Schema(example = "2024-11-09T22:47:24.233199")
         @JsonProperty(value = "finished_at", required = true)
         LocalDateTime finishedAt
 ) {

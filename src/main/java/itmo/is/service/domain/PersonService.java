@@ -34,6 +34,7 @@ public class PersonService {
     private final PersonRepository personRepository;
     private final PersonMapper personMapper;
     private final PersonHistoryService personHistoryService;
+    private final ObjectMapper objectMapper;
 
     public Page<PersonDto> findAllPeople(String name, Pageable pageable) {
         if (name != null && !name.isEmpty()) {
@@ -53,7 +54,7 @@ public class PersonService {
 
     private List<CreatePersonRequest> parseFile(MultipartFile file) {
         try {
-            return new ObjectMapper().readValue(file.getBytes(), new TypeReference<>() {
+            return objectMapper.readValue(file.getBytes(), new TypeReference<>() {
             });
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Invalid JSON file format", e);

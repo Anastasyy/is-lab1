@@ -1,5 +1,6 @@
 package itmo.is.dto.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import itmo.is.dto.authentication.UserDto;
@@ -21,8 +22,9 @@ public record PersonDto(
         @JsonProperty("coordinates")
         CoordinatesDto coordinates,
 
-        @Schema(example = "2024-02-10T16:24:23.760031")
+        @Schema(example = "2024-02-10 16:24:23")
         @JsonProperty("creation_date")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime creationDate,
 
         @Schema(example = "BLUE")
@@ -41,7 +43,8 @@ public record PersonDto(
         Long height,
 
         @Schema(example = "2003-08-27")
-        @JsonProperty("birthday")
+        @JsonProperty(value = "birthday")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         LocalDate birthday,
 
         @Schema(example = "55")

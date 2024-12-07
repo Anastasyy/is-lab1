@@ -1,5 +1,6 @@
 package itmo.is.dto.history;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import itmo.is.dto.authentication.UserDto;
@@ -22,12 +23,14 @@ public record PersonImportDto(
         @JsonProperty(value = "objects_added", required = true)
         Integer objectsAdded,
 
-        @Schema(example = "2024-02-10T16:24:23.760031")
+        @Schema(example = "2024-02-10 16:24:23")
         @JsonProperty(value = "started_at", required = true)
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime startedAt,
 
-        @Schema(example = "2024-11-09T22:47:24.233199")
+        @Schema(example = "2024-11-09 22:47:24")
         @JsonProperty(value = "finished_at", required = true)
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime finishedAt
 ) {
 }

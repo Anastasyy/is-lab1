@@ -71,6 +71,12 @@ public class GlobalExceptionHandler {
         return ex.getMessage();
     }
 
+    @ResponseStatus(value = HttpStatus.CONFLICT)
+    @ExceptionHandler(UniqueConstraintViolationException.class)
+    public String handleUniqueConstraintViolationException(UniqueConstraintViolationException ex) {
+        return "Unique constraint violation: " + ex.getMessage();
+    }
+
     @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
     @ExceptionHandler(SQLException.class)
     public String handleSQLException(Exception ex) {

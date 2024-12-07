@@ -8,6 +8,7 @@ import itmo.is.dto.domain.request.CreatePersonRequest;
 import itmo.is.dto.domain.request.UpdatePersonRequest;
 import itmo.is.dto.domain.response.CountResponse;
 import itmo.is.dto.domain.response.PercentageResponse;
+import itmo.is.exception.UniqueConstraintViolationException;
 import itmo.is.mapper.domain.PersonMapper;
 import itmo.is.model.domain.Color;
 import itmo.is.model.domain.Country;
@@ -141,7 +142,7 @@ public class PersonService {
 
     private void validateUniquePersonNameConstraint(Person person) {
         if (personRepository.existsByName(person.getName())) {
-            throw new IllegalArgumentException("Name '" + person.getName() + "' already exists");
+            throw new UniqueConstraintViolationException("Name '" + person.getName() + "' already exists");
         }
     }
 
@@ -149,11 +150,11 @@ public class PersonService {
         Set<String> names = new HashSet<>();
         people.forEach(person -> {
             if (!names.add(person.getName())) {
-                throw new IllegalArgumentException("Name '" + person.getName() + "' already exists");
+                throw new UniqueConstraintViolationException("Name '" + person.getName() + "' already exists");
             }
         });
         personRepository.findFirstByNameIn(names).ifPresent((person) -> {
-            throw new IllegalArgumentException("Name '" + person.getName() + "' already exists");
+            throw new UniqueConstraintViolationException("Name '" + person.getName() + "' already exists");
         });
     }
 }

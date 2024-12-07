@@ -5,17 +5,25 @@ import itmo.is.dto.domain.request.CreatePersonRequest;
 import itmo.is.dto.domain.request.UpdatePersonRequest;
 import itmo.is.dto.domain.response.CountResponse;
 import itmo.is.dto.domain.response.PercentageResponse;
+import itmo.is.dto.history.PersonImportDto;
 import itmo.is.model.domain.Color;
 import itmo.is.model.domain.Country;
+import itmo.is.model.security.Role;
+import itmo.is.model.security.User;
 import itmo.is.service.domain.PersonService;
+import itmo.is.service.history.PersonHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,11 +33,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PersonRestController {
     private final PersonService personService;
+    private final PersonHistoryService personHistoryService;
 
     @GetMapping
     public ResponseEntity<Page<PersonDto>> getAllPeople(
             @RequestParam(value = "name", required = false) String name,
-            Pageable pageable
+            @PageableDefault Pageable pageable
     ) {
         Page<PersonDto> people = personService.findAllPeople(name, pageable);
         return ResponseEntity.ok(people);
@@ -45,6 +54,26 @@ public class PersonRestController {
     public ResponseEntity<PersonDto> createPerson(@RequestBody CreatePersonRequest request) {
         PersonDto createdPerson = personService.createPerson(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPerson);
+    }
+
+    @PostMapping(value = "/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Void> importFile(@RequestPart("file") MultipartFile file) {
+        personService.importFile(file);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping(value = "/import/history")
+    public ResponseEntity<Page<PersonImportDto>> findAllImports(
+            @AuthenticationPrincipal User user,
+            @PageableDefault Pageable pageable
+    ) {
+        Page<PersonImportDto> result;
+        if (user.getRole() == Role.ROLE_ADMIN) {
+            result = personHistoryService.findAll(pageable);
+        } else {
+            result = personHistoryService.findAllByUser(user, pageable);
+        }
+        return ResponseEntity.ok(result);
     }
 
     @PreAuthorize("@personSecurityService.hasEditRights(#id)")

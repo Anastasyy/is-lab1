@@ -89,10 +89,14 @@ public class PersonService {
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public PersonDto updatePerson(int id, UpdatePersonRequest request) {
-        var person = personMapper.toEntity(request);
-        validateUniquePersonNameConstraint(person);
-        person.setId(id);
-        return personMapper.toDto(personRepository.save(person));
+        Person original = personRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Person not found with id: " + id));
+        Person updated = personMapper.toEntity(request);
+        validateUniquePersonNameConstraint(updated);
+        updated.setId(id);
+        updated.setOwner(original.getOwner());
+        updated.setAdminEditAllowed(original.isAdminEditAllowed());
+        return personMapper.toDto(personRepository.save(updated));
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)

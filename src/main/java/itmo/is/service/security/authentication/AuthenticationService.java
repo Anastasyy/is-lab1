@@ -8,6 +8,7 @@ import itmo.is.mapper.security.UserMapper;
 import itmo.is.model.security.Role;
 import itmo.is.model.security.User;
 import itmo.is.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -37,7 +38,8 @@ public class AuthenticationService {
                         request.password()
                 )
         );
-        User user = userRepository.findByUsername(request.username()).orElseThrow();
+        User user = userRepository.findByUsername(request.username())
+                .orElseThrow(() -> new EntityNotFoundException("User not found with username: " + request.username()));
 
         if (!user.isEnabled()) {
             throw new AuthenticationServiceException("User is disabled");
@@ -70,13 +72,15 @@ public class AuthenticationService {
     }
 
     public void approveAdminRegistrationRequest(Long userId) {
-        var user = userRepository.findById(userId).orElseThrow();
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
         user.setEnabled(true);
         userRepository.save(user);
     }
 
     public void rejectAdminRegistrationRequest(Long userId) {
-        var user = userRepository.findById(userId).orElseThrow();
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
         if (user.isEnabled()) {
             throw new AuthenticationServiceException("User is enabled");
         }

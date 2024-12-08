@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.exception.LockAcquisitionException;
+import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -68,6 +69,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
     @ExceptionHandler(AuthorizationDeniedException.class)
     public String handleAuthorizationDeniedException(AuthorizationDeniedException ex) {
+        ex.printStackTrace();
         return ex.getMessage();
     }
 
@@ -86,6 +88,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
     @ExceptionHandler(LockAcquisitionException.class)
     public String handleLockAcquisitionException(LockAcquisitionException ex) {
+        return "The resource is currently locked by another operation";
+    }
+
+    @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
+    @ExceptionHandler(CannotAcquireLockException.class)
+    public String handleCannotAcquireLockException(CannotAcquireLockException ex) {
         return "The resource is currently locked by another operation";
     }
 

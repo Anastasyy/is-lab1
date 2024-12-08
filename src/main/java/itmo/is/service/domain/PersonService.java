@@ -16,6 +16,7 @@ import itmo.is.model.domain.Person;
 import itmo.is.model.history.PersonImport;
 import itmo.is.repository.PersonRepository;
 import itmo.is.service.history.PersonHistoryService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,7 +46,8 @@ public class PersonService {
     }
 
     public PersonDto findPersonById(int id) {
-        return personRepository.findById(id).map(personMapper::toDto).orElseThrow();
+        return personRepository.findById(id).map(personMapper::toDto)
+                .orElseThrow(() -> new EntityNotFoundException("Person not found with id: " + id));
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
@@ -88,6 +90,7 @@ public class PersonService {
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public PersonDto updatePerson(int id, UpdatePersonRequest request) {
         var person = personMapper.toEntity(request);
+        validateUniquePersonNameConstraint(person);
         person.setId(id);
         return personMapper.toDto(personRepository.save(person));
     }
@@ -99,14 +102,16 @@ public class PersonService {
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void allowAdminEditing(int id) {
-        var person = personRepository.findById(id).orElseThrow();
+        var person = personRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Person not found with id: " + id));
         person.setAdminEditAllowed(true);
         personRepository.save(person);
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void denyAdminEditing(int id) {
-        var person = personRepository.findById(id).orElseThrow();
+        var person = personRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Person not found with id: " + id));
         person.setAdminEditAllowed(false);
         personRepository.save(person);
     }

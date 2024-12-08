@@ -9,7 +9,7 @@ services:
     ports:
       - "15432:5432"
   is-lab1:
-    build: backend
+    build: .
     depends_on:
       - postgres
     environment:

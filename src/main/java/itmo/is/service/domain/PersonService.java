@@ -92,7 +92,9 @@ public class PersonService {
         Person original = personRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Person not found with id: " + id));
         Person updated = personMapper.toEntity(request);
-        validateUniquePersonNameConstraint(updated);
+        if (!original.getName().equals(updated.getName())) {
+            validateUniquePersonNameConstraint(updated);
+        }
         updated.setId(id);
         updated.setOwner(original.getOwner());
         updated.setAdminEditAllowed(original.isAdminEditAllowed());

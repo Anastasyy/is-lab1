@@ -9,13 +9,11 @@ spring:
     generate-ddl: ${SPRING_JPA_GENERATE_DDL:true}
     hibernate:
       ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
-    show-sql: ${SPRING_JPA_SHOW_SQL:false}
+    show-sql: ${SPRING_JPA_SHOW_SQL:true}
     properties:
       hibernate:
         dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT:org.hibernate.dialect.PostgreSQLDialect}
         jdbc.lob.non_contextual_creation: ${SPRING_JPA_PROPERTIES_HIBERNATE_JDBC_LOB_NON_CONTEXTUAL_CREATION:true}
-        connection:
-          isolation: 2 # read commited
 
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:15432/studs}
@@ -32,7 +30,7 @@ application:
     jwt:
       secret-key: ${APPLICATION_SECURITY_JWT_SECRET_KEY:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
       expiration: ${APPLICATION_SECURITY_EXPIRATION:8640000000} # 100 days
-    password-min-length: 8
+    password-min-length: 6
 
 springdoc:
   api-docs:

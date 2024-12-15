@@ -32,7 +32,7 @@ public class AuthenticationRestController {
     public ResponseEntity<JwtResponse> registerAdmin(@RequestBody RegisterRequest request) {
         if (authenticationService.hasRegisteredAdmins()) {
             authenticationService.submitAdminRegistrationRequest(request);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.accepted().build();
         } else {
             return ResponseEntity.ok(authenticationService.registerFirstAdmin(request));
         }

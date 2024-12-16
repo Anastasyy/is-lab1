@@ -117,6 +117,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(S3Exception.class)
     public String handleS3Exception(S3Exception e) {
+        log.error(e.getMessage());
         return "S3 exception: " + e.getMessage();
     }
 

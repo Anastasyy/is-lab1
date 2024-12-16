@@ -52,7 +52,12 @@ public class PersonService {
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void importFile(MultipartFile file) {
-        importPeopleHistoryProxy(parseFile(file));
+        PersonImport personImport = personHistoryService.createStartedImportLog();
+        List<CreatePersonRequest> requests = parseFile(file);
+        importPeople(requests);
+        personImport.setSuccess(true);
+        personImport.setObjectsAdded(requests.size());
+        personHistoryService.saveFinishedImportLog(personImport);
     }
 
     private List<CreatePersonRequest> parseFile(MultipartFile file) {
@@ -64,14 +69,6 @@ public class PersonService {
         } catch (IOException e) {
             throw new RuntimeException("Error reading JSON file", e);
         }
-    }
-
-    private void importPeopleHistoryProxy(List<CreatePersonRequest> requests) {
-        PersonImport personImport = personHistoryService.createStartedImportLog();
-        importPeople(requests);
-        personImport.setSuccess(true);
-        personImport.setObjectsAdded(requests.size());
-        personHistoryService.saveFinishedImportLog(personImport);
     }
 
     private void importPeople(List<CreatePersonRequest> requests) {

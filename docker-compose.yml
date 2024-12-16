@@ -1,20 +1,21 @@
 services:
   postgres:
     image: postgres:latest
-    container_name: postgres
+    container_name: nastenysh-is-labs-postgres
     environment:
-      POSTGRES_USER: nastenysh
+      POSTGRES_USER: s368643
       POSTGRES_PASSWORD: qwerty12345
       POSTGRES_DB: studs
     ports:
       - "15432:5432"
-  is-lab1:
+  backend:
     build: .
+    container_name: nastenysh-is-labs-backend
     depends_on:
       - postgres
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/studs
-      - SPRING_DATASOURCE_USERNAME=nastenysh
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://nastenysh-is-labs-postgres:5432/studs
+      - SPRING_DATASOURCE_USERNAME=s368643
       - SPRING_DATASOURCE_PASSWORD=qwerty12345
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     ports:

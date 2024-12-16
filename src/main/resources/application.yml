@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: is-lab1
+    name: is-labs
 
   jpa:
     generate-ddl: ${SPRING_JPA_GENERATE_DDL:true}
@@ -17,7 +17,7 @@ spring:
 
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:15432/studs}
-    username: ${SPRING_DATASOURCE_USERNAME:nastenysh}
+    username: ${SPRING_DATASOURCE_USERNAME:s368643}
     password: ${SPRING_DATASOURCE_PASSWORD:qwerty12345}
 
   servlet:

@@ -8,6 +8,7 @@ import itmo.is.dto.domain.request.CreatePersonRequest;
 import itmo.is.dto.domain.request.UpdatePersonRequest;
 import itmo.is.dto.domain.response.CountResponse;
 import itmo.is.dto.domain.response.PercentageResponse;
+import itmo.is.dto.history.PersonImportDto;
 import itmo.is.exception.UniqueConstraintViolationException;
 import itmo.is.mapper.domain.PersonMapper;
 import itmo.is.model.domain.Color;
@@ -18,6 +19,7 @@ import itmo.is.repository.PersonRepository;
 import itmo.is.service.history.PersonHistoryService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -51,13 +53,14 @@ public class PersonService {
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public void importFile(MultipartFile file) {
+    public PersonImportDto importFile(MultipartFile file) {
         PersonImport personImport = personHistoryService.createStartedImportLog();
         List<CreatePersonRequest> requests = parseFile(file);
         importPeople(requests);
         personImport.setSuccess(true);
         personImport.setObjectsAdded(requests.size());
-        personHistoryService.saveFinishedImportLog(personImport);
+        personHistoryService.saveImportFile(file, personImport.getId());
+        return personHistoryService.saveFinishedImportLog(personImport);
     }
 
     private List<CreatePersonRequest> parseFile(MultipartFile file) {
@@ -75,6 +78,10 @@ public class PersonService {
         List<Person> people = requests.stream().map(personMapper::toEntity).toList();
         validateUniquePersonNameConstraint(people);
         personRepository.saveAll(people);
+    }
+
+    public ByteArrayResource getImportFileByImportId(Long importId) {
+        return personHistoryService.getFileByImportId(importId);
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)

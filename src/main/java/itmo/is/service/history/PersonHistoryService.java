@@ -41,8 +41,8 @@ public class PersonHistoryService {
         return personImportRepository.findAllByUser(user, pageable).map(personImportMapper::toDto);
     }
 
-    public void saveImportFile(MultipartFile file, PersonImport importLog) {
-        String filename = filenameByImportId(importLog.getId());
+    public void saveImportFile(MultipartFile file, Long importId) {
+        String filename = filenameByImportId(importId);
         s3Service.save(filename, file);
     }
 

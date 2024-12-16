@@ -14,12 +14,11 @@ import itmo.is.service.domain.PersonService;
 import itmo.is.service.history.PersonHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -56,13 +55,12 @@ public class PersonRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPerson);
     }
 
-    @PostMapping(value = "/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Void> importFile(@RequestPart("file") MultipartFile file) {
-        personService.importFile(file);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @PostMapping(value = "/imports", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<PersonImportDto> importFile(@RequestPart("file") MultipartFile file) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(personService.importFile(file));
     }
 
-    @GetMapping(value = "/import/history")
+    @GetMapping(value = "/imports")
     public ResponseEntity<Page<PersonImportDto>> findAllImports(
             @AuthenticationPrincipal User user,
             @PageableDefault Pageable pageable
@@ -74,6 +72,21 @@ public class PersonRestController {
             result = personHistoryService.findAllByUser(user, pageable);
         }
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/imports/{id}/file")
+    public ResponseEntity<ByteArrayResource> getFileByImportId(@PathVariable Long id) {
+        ByteArrayResource file = personService.getImportFileByImportId(id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("person-import-" + id + ".json")
+                .build());
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(file);
     }
 
     @PreAuthorize("@personSecurityService.hasEditRights(#id)")

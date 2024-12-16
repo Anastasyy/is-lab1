@@ -25,7 +25,17 @@ spring:
       max-file-size: 20MB
       max-request-size: 20MB
 
+  cloud:
+    aws:
+      credentials:
+        access-key: ${SPRING_CLOUD_AWS_CREDENTIALS_ACCESS_KEY}
+        secret-key: ${SPRING_CLOUD_AWS_CREDENTIALS_SECRET_KEY}
+      region:
+        static: ru-central1
+      endpoint: https://storage.yandexcloud.net
+
 application:
+  aws.s3.bucket.name: nastenysh-itmo-is-labs
   security:
     jwt:
       secret-key: ${APPLICATION_SECURITY_JWT_SECRET_KEY:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
